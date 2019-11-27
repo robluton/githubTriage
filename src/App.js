@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { getAppStatus, getIssues, getRepos } from './reducers/';
+import { fetchIssues, fetchRepos } from './actions';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-function App() {
+function App(props) {
+
+  useEffect(() => {
+    // props.fetchRepos();
+  })
+
+  console.log(props);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -23,4 +34,21 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    repos: getRepos(state),
+    issues: getIssues(state),
+    appStatus: getAppStatus(state),
+  };
+}
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      fetchRepos,
+      fetchIssues,
+    },
+    dispatch,
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

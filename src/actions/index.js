@@ -9,16 +9,17 @@ export const FETCH_ISSUES_SUCCESS = 'FETCH_ISSUES_SUCCESS';
 export const FETCH_ISSUES_FAIL = 'FETCH_ISSUES_FAIL';
 
 const API_BASE_URL = 'https://api.github.com';
+const USER = process.env.REACT_APP_GITHUB_USER;
 
 // Action Creators
 export function fetchRepos() {
   return async (dispatch, getState) => {
     dispatch({ type: FETCH_REPOS });
     try {
-      const resp = await axios.get(`${API_BASE_URL}/user/repos/`, {
+      const resp = await axios.get(`${API_BASE_URL}/users/${USER}/repos`, {
         auth: {
-          username: process.env.GITHUB_USER,
-          password: process.env.GITHUB_PASS,
+          username: USER,
+          password: process.env.REACT_APP_GITHUB_PASS,
         }
       });
       dispatch({ type: FETCH_REPOS_SUCCESS, data: resp.data });
@@ -28,11 +29,13 @@ export function fetchRepos() {
   }
 }
 
-export function fetchIssues() {
+export function fetchIssues(repo) {
   return async (dispatch, getState) => {
     dispatch({ type: FETCH_ISSUES });
+    // https://api.github.com/repos/username/reponame/issues
+    const url = repo ? `${API_BASE_URL}/repos/${USER}/${repo}/issues` : `${API_BASE_URL}${USER}/issues`;
     try {
-      const resp = await axios.get(`${API_BASE_URL}/user/issues/`, {
+      const resp = await axios.get(url, {
         auth: {
           username: process.env.GITHUB_USER,
           password: process.env.GITHUB_PASS,

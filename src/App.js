@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { getAppStatus, getIssues, getRepos } from './reducers/';
 import { fetchIssues, fetchRepos } from './actions';
@@ -8,28 +7,35 @@ import { connect } from 'react-redux';
 
 function App(props) {
 
-  useEffect(() => {
-    // props.fetchRepos();
-  })
+  const [selectedRepo, setSelectedRepo] = useState(null);
 
-  console.log(props);
+  useEffect(() => {
+    props.fetchRepos();
+  }, []);
+
+  useEffect(() => {
+    if (selectedRepo) {
+      props.fetchIssues(selectedRepo);
+    }
+  }, [selectedRepo]);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <div className="page-title">
+        <h2 className="font-serif">GITHUB ISSUES</h2>
+      </div>
+      <div className="main">
+        <div className="col-4">
+          <div className="sidebar">
+            {props.repos.map(repo => (<div className="repo-item" onClick={() => setSelectedRepo(repo.name)}>{repo.name}</div>))}
+          </div>
+        </div>
+        <div className="col-8">
+          <div className="main-content">
+            {props.issues.map(issue => (<div className="issue-item">{issue.title}</div>))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

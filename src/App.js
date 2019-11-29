@@ -32,7 +32,22 @@ function App(props) {
         </div>
         <div className="col-8">
           <div className="main-content">
-            {props.issues.map(issue => (<div className="issue-item">{issue.title}</div>))}
+            {props.issues.map(issue => (
+              <div className="issue-item">
+                <div className="flex-row items-center">
+                  {issue.assignee && issue.assignee.avatar_url ? (
+                    <img className="rounded-full avatar" src={issue.assignee.avatar_url} alt="owner avatar" />
+                  ) : <div className="rounded-full avatar" style={{ background: '#ccc' }}></div>}
+                  <div className="flex-row flex-wrap items-center">
+                    <div className="issue-title-text" style={{ marginBottom: '0.5rem' }}>{issue.title}</div>
+                    <div className="col-12">
+                      <span style={{ marginRight: '1rem' }} className="font-sans">created {issue.created_at}</span>
+                      <span className="font-sans date-text">updated {issue.updated_at}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

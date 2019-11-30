@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { format, parseISO, formatRelative } from 'date-fns';
+import _get from 'lodash/get';
 
 export const FETCH_REPOS = 'FETCH_REPOS';
 export const FETCH_REPOS_SUCCESS = 'FETCH_REPOS_SUCCESS';
@@ -41,7 +43,20 @@ export function fetchIssues(repo) {
           password: process.env.GITHUB_PASS,
         }
       });
-      dispatch({ type: FETCH_ISSUES_SUCCESS, data: resp.data });
+
+      const data = resp.data.map(issue => {
+        return (
+          {
+            title: issue.title,
+            assignee: _get(issue, 'assignee', ''),
+            assigneeAvatarURL: _get(issue, 'assignee.avatar_url', ''),
+            updated: formatRelative(parseISO(issue.updated_at), new Date()),
+            created: format(parseISO(issue.created_at), 'MM/dd/yyyy'),
+          }
+        );
+      });
+
+      dispatch({ type: FETCH_ISSUES_SUCCESS, data });
     } catch(error) {
       dispatch({ type: FETCH_ISSUES_FAIL, error });
     }

@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import { getAppStatus, getIssues, getRepos } from './reducers/';
-import { fetchIssues, fetchRepos } from './actions';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import { getAppStatus, getIssues, getRepos } from "./reducers/";
+import { fetchIssues, fetchRepos } from "./actions";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
 function App(props) {
-
   const [selectedRepo, setSelectedRepo] = useState(null);
 
   useEffect(() => {
@@ -27,7 +26,14 @@ function App(props) {
       <div className="main">
         <div className="col-4">
           <div className="sidebar">
-            {props.repos.map(repo => (<div className="repo-item" onClick={() => setSelectedRepo(repo.name)}>{repo.name}</div>))}
+            {props.repos.map(repo => (
+              <div
+                className="repo-item"
+                onClick={() => setSelectedRepo(repo.name)}
+              >
+                {repo.name}
+              </div>
+            ))}
           </div>
         </div>
         <div className="col-8">
@@ -35,19 +41,36 @@ function App(props) {
             {props.issues.map(issue => (
               <div className="issue-item">
                 <div className="flex-row items-center">
-                  {issue.assigneeAvatarURL
-                    ? ( <img className="rounded-full avatar" src={issue.assigneeAvatarURL} alt="owner avatar" />)
-                    : <div className="rounded-full avatar" style={{ background: '#ccc' }}></div>}
+                  {issue.assigneeAvatarURL ? (
+                    <img
+                      className="rounded-full avatar"
+                      src={issue.assigneeAvatarURL}
+                      alt="owner avatar"
+                    />
+                  ) : (
+                    <div
+                      className="rounded-full avatar"
+                      style={{ background: "#ccc" }}
+                    ></div>
+                  )}
                   <div className="flex-row flex-wrap items-center">
-                    <div className="issue-title-text" style={{ marginBottom: '0.5rem' }}>{issue.title}</div>
+                    <div
+                      className="issue-title-text"
+                      style={{ marginBottom: "0.5rem" }}
+                    >
+                      {issue.title}
+                    </div>
                     <div className="col-12">
                       <span
-                        style={{ marginRight: '1rem' }}
-                        className="font-sans date-text">
-                          created
+                        style={{ marginRight: "1rem" }}
+                        className="font-sans date-text"
+                      >
+                        created
                         <span>{issue.created}</span>
                       </span>
-                      <span className="font-sans date-text">updated <span>{issue.updated}</span></span>
+                      <span className="font-sans date-text">
+                        updated <span>{issue.updated}</span>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -60,21 +83,21 @@ function App(props) {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     repos: getRepos(state),
     issues: getIssues(state),
-    appStatus: getAppStatus(state),
+    appStatus: getAppStatus(state)
   };
-}
+};
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       fetchRepos,
-      fetchIssues,
+      fetchIssues
     },
-    dispatch,
+    dispatch
   );
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

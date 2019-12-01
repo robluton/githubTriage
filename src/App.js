@@ -31,14 +31,19 @@ function App(props) {
       <div className="main">
         <div className="col-4">
           <div className="sidebar">
-            {props.repos.map(repo => (
+            {props.repos.map(repo => {
+              const cssClasses = selectedRepo === repo.name
+                ? 'repo-item repo-item_selected'
+                : 'repo-item';
+              return (
               <div
-                className="repo-item"
+                className={cssClasses}
                 onClick={() => setSelectedRepo(repo.name)}
               >
                 {repo.name}
               </div>
-            ))}
+            )
+            })}
           </div>
         </div>
         <div className="col-8">

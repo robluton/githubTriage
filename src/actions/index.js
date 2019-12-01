@@ -10,10 +10,26 @@ export const FETCH_ISSUES = 'FETCH_ISSUES';
 export const FETCH_ISSUES_SUCCESS = 'FETCH_ISSUES_SUCCESS';
 export const FETCH_ISSUES_FAIL = 'FETCH_ISSUES_FAIL';
 
+export const UPDATE_SORT_SETTINGS_SUCCESS = 'UPDATE_SORT_SETTINGS_SUCCESS';
+
 const API_BASE_URL = 'https://api.github.com';
 const USER = process.env.REACT_APP_GITHUB_USER;
 
-// Action Creators
+export function updateSortSettings(settings) {
+  return async (dispatch, getState) => {
+    const currentSettings = getState().sortSettings;
+    const updatedSettings = {
+        ...currentSettings,
+        ...settings,
+      }
+    localStorage.setItem('sortSettings', JSON.stringify(updatedSettings));
+    return dispatch({
+      type: UPDATE_SORT_SETTINGS_SUCCESS,
+      data: updatedSettings,
+    });
+  };
+}
+
 export function fetchRepos() {
   return async (dispatch, getState) => {
     dispatch({ type: FETCH_REPOS });
@@ -35,7 +51,9 @@ export function fetchIssues(repo) {
   return async (dispatch, getState) => {
     dispatch({ type: FETCH_ISSUES });
     // https://api.github.com/repos/username/reponame/issues
-    const url = repo ? `${API_BASE_URL}/repos/${USER}/${repo}/issues` : `${API_BASE_URL}${USER}/issues`;
+    const url = repo
+      ? `${API_BASE_URL}/repos/${USER}/${repo}/issues`
+      : `${API_BASE_URL}${USER}/issues`;
     try {
       const resp = await axios.get(url, {
         auth: {
@@ -50,8 +68,10 @@ export function fetchIssues(repo) {
             title: issue.title,
             assignee: _get(issue, 'assignee', ''),
             assigneeAvatarURL: _get(issue, 'assignee.avatar_url', ''),
-            updated: formatRelative(parseISO(issue.updated_at), new Date()),
-            created: format(parseISO(issue.created_at), 'MM/dd/yyyy'),
+            updatedFormatted: formatRelative(parseISO(issue.updated_at), new Date()),
+            createdFormatted: format(parseISO(issue.created_at), 'MM/dd/yyyy'),
+            updated: issue.updated_at,
+            created: issue.created_at,
           }
         );
       });

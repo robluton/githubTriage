@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { getAppStatus, getIssues, getRepos } from "./reducers/";
-import { fetchIssues, fetchRepos } from "./actions";
+import { getAppStatus, getIssues, getRepos, getSortSettings } from "./reducers/";
+import { fetchIssues, fetchRepos, updateSortSettings } from "./actions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 function App(props) {
+  const { sortField, sortDirection } = props.sortSettings;
   const [selectedRepo, setSelectedRepo] = useState(null);
 
   useEffect(() => {
@@ -17,6 +18,10 @@ function App(props) {
       props.fetchIssues(selectedRepo);
     }
   }, [selectedRepo]);
+
+  function handleSortChange(value, field) {
+    props.updateSortSettings({ [field]: value });
+  }
 
   return (
     <div className="app">
@@ -38,6 +43,25 @@ function App(props) {
         </div>
         <div className="col-8">
           <div className="main-content">
+            <div style={{ marginBottom: '1rem' }}>
+              <select
+                style={{ marginRight: '0.5rem' }}
+                value={sortField}
+                onChange={(e) => handleSortChange(e.target.value, 'sortField')
+              }>
+                <option value="title">Title</option>
+                <option value="created">Created</option>
+                <option value="updated">Updated</option>
+              </select>
+              <select
+                style={{ marginRight: '0.5rem' }}
+                value={sortDirection}
+                onChange={(e) => handleSortChange(e.target.value, 'sortDirection')}
+              >
+                <option value="asc">ASC</option>
+                <option value="desc">DESC</option>
+              </select>
+            </div>
             {props.issues.map(issue => (
               <div className="issue-item">
                 <div className="flex-row items-center">
@@ -66,10 +90,10 @@ function App(props) {
                         className="font-sans date-text"
                       >
                         created
-                        <span>{issue.created}</span>
+                        <span>{issue.createdFormatted}</span>
                       </span>
                       <span className="font-sans date-text">
-                        updated <span>{issue.updated}</span>
+                        updated <span>{issue.updatedFormatted}</span>
                       </span>
                     </div>
                   </div>
@@ -87,7 +111,8 @@ const mapStateToProps = state => {
   return {
     repos: getRepos(state),
     issues: getIssues(state),
-    appStatus: getAppStatus(state)
+    appStatus: getAppStatus(state),
+    sortSettings: getSortSettings(state),
   };
 };
 
@@ -95,7 +120,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       fetchRepos,
-      fetchIssues
+      fetchIssues,
+      updateSortSettings,
     },
     dispatch
   );

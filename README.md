@@ -1,6 +1,6 @@
 ### Preparation
 You will need to get an api key from github. Create a .env file, using the default.env file as a template, and populate with your own values. You can then install the packages and launch the project.
-* NOTE: Never use create-react-app env vars in production or commit the resulting build files to source control. *
+* NOTE: Never use create-react-app env vars in production or commit the resulting build files to source control.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
